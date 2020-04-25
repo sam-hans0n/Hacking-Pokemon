@@ -1,0 +1,50 @@
+*********************** Hacking Pokemon Fire Red Notes ***********************
+
+
+*** Pokemon Data Structure Memory Information:
+
+ - Trainers party starts at 0x02024284 !!!!
+ - 600 bytes describe the whole team of 6 pokemon
+ - First pokemon data starts at 0x020242A4
+ - Pokemon data is broken into 4 substructures:
+      G = growth
+      A = attacks
+      E = EVs and condition
+      M = miscellaneous
+    The order of these structures is determined by the formula:
+      order = pokemon-personality-value MOD 24
+    And that value determines order which can be seen here:
+    https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_data_substructures_in_Generation_III#Encryption
+
+
+CHARMANDER INFO:
+ - starts at 0x020242A4
+ - personality-value = 0x50990D0C
+ - OT ID = 0xB39218C3
+ - pokemon data order is (0x50990D0C MOD 24) = 12 so EGAM
+ - decryption key = (OT ID XOR personality-value) so 0xB39218C3 XOR 0x50990D0C
+    so key = 0xbf9f8193
+
+
+
+** Encrypted Pokemon Data:
+
+The four data substructures are encrypted.
+
+To decrypt:
+  1. Need to obtain the decryption key. This is found via:
+      key = Original-Trainer-ID XOR pokemon-personality-value
+  2. Decrypt data via XOR-ing key and the data
+
+
+
+** Decrypted Pokemon Data:
+
+EVERYTHING IS BACKWARDS! IT'S LITTLE ENDIAN!!
+
+Starting at 0x20242A4...
+0C0D9950B39218C3BDC2BBCCC7BBC8BEBFCC0202BBBBBBBBBBBBBB0095480000
+
+            00 00 00 00 00 00 00 00 00 00 00 00
+04 00 00 00 00 00 00 87 00 00 46 00 00 2d 00 0a
+00 00 00 00 00 00 28 23
