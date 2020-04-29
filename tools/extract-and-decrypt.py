@@ -3,16 +3,16 @@
 # Sam Hanson, 2020
 #
 # Created for CSCI5981: Binary Analysis and Reverse Engineering
-# This script parses hexadecimal memory values (starting at the first trainer
+# This script parses hexadecimal memory values (starting at the first party
 # byte, location 0x02024284 in RAM) and decrypts pokemon data.
 #
 # How to Use:
 #  1) Have Python3 installed
-#  2) Change party_data_raw to be hexadecimal str of your trainer's memory
+#  2) Change party_data_raw to be hexadecimal str of your party's memory
 #     (just copy/paste > 100 bytes and script will work)
 #
 # Future To-Do's:
-#   * User enters pokemon name, bytes automagically propagate into trainer struct
+#   * User enters pokemon name, bytes automagically propagate into party struct
 # ------------------------------------------------------------------------------
 
 
@@ -20,7 +20,16 @@ party_data_raw = "C1E007DD54E18D05BDC2BBCCC7BBC8BEBFCC0202BBBBBBBBBBBBBB00DA1200
 
 
 def ExtractBytesFromIndex(byte_str, start, end):
-    return byte_str[start*2:end*2] # 2 because there are 2 chars ber byte
+    bytes = byte_str[start*2:end*2] # 2 because there are 2 chars ber byte
+
+    # also reorders bytes from little endian to big endian format
+    bytes_arr = []
+    for i in range(0, len(bytes), 2):
+        bytes_arr.append(bytes[i:i+2])
+    bytes_arr = list(reversed(bytes_arr))
+
+    bytes_little_endian = ''.join(bytes_arr) # essentially, the .implode() function from PHP
+    return bytes_little_endian
 
 
 class PokemonParty:
@@ -48,33 +57,141 @@ class PokemonParty:
 
 
 
-
-
 class PokemonData:
     def __init__(self, data, personality_value):
         self.data = data
-        self.substruct_order = self.Determine_Structure_Order(personality_value)
 
-        # The following sub-structures are randomly ordered when the Pokemon is
-        # created in memory, hence substruct_order variable.
-        #self.growth = GrowthSection(ExtractBytesFromIndex(self.data, ??, ??))
-        self.attack = AttacksSection(self.data)
-        self.ev_cond = EV_Condition(self.data)
-        self.misc = Miscellaneous(self.data)
+        self.key = self.Decrypt_PokemonData(self.data) # to be decrypted...
 
-        self.key = None # to be decrypted...
+        self.order = "" # substructures are randomly ordered
+        self.growth = None
+        self.attack = None
+        self.ev = None
+        self.misc = None
+        self.InitiateSubstructes()
 
 
     def Determine_Structure_Order(self, personality_value):
-        print("***" + personality_value)
-        #struct_type = hex(personality_value) % 24
-        #return struct_type
+        order_num = int(personality_value, 16) % 24 # formula for finding struct order
 
-    def Decrypt_PokemonData(self):
+        substructs = []
+        if order_num == 0:
+            self.order = "GAEM"
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 0, 12))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 12, 24))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 24, 36))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 1:
+            self.order = "GAME"
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 0, 12))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 12, 24))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 24, 36))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 2:
+            self.order = "GEAM"
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 0, 12))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 12, 24))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 24, 36))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 3:
+            self.order = "GEMA"
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 0, 12))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 12, 24))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 24, 36))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 4:
+            self.order = "GMAE"
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 0, 12))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 12, 24))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 24, 36))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 5:
+            self.order = "GMEA"
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 0, 12))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 12, 24))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 24, 36))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 6:
+            self.order = "AGEM"
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 0, 12))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 12, 24))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 24, 36))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 7:
+            self.order = "AGME"
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 0, 12))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 12, 24))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 24, 36))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 8:
+            self.order = "AEGM"
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 0, 12))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 12, 24))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 24, 36))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 9:
+            self.order = "AEMG"
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 0, 12))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 12, 24))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 24, 36))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 10:
+            self.order = "AMGE"
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 0, 12))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 12, 24))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 24, 36))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 11:
+            self.order = "AMEG"
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 0, 12))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 12, 24))
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 24, 36))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 12:
+            self.order = "EGAM"
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 0, 12))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 12, 24))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 24, 36))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 13:
+            self.order = "EGMA"
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 0, 12))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 12, 24))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 24, 36))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 14:
+            self.order = "EAGM"
+            self.ev = EV_Condition(ExtractBytesFromIndex(self.data, 0, 12))
+            self.attack = Attacks(ExtractBytesFromIndex(self.data, 12, 24))
+            self.growth = Growth(ExtractBytesFromIndex(self.data, 24, 36))
+            self.misc = Miscellaneous(ExtractBytesFromIndex(self.data, 36, 48))
+        elif order_num == 15:
+            return "EAMG"
+        elif order_num == 16:
+            return "EMGA"
+        elif order_num == 17:
+            return "EMAG"
+        elif order_num == 18:
+            return "MGAE"
+        elif order_num == 19:
+            return "MGEA"
+        elif order_num == 20:
+            return "MAGE"
+        elif order == 21:
+            return "MAEG"
+        elif order == 22:
+            return "MEGA"
+        elif order == 23:
+            return "MEAG"
+
+        return substructs
+
+
+    def Decrypt_PokemonData(self, data):
         return None
 
 
-class GrowthSection:
+class Growth:
     def __init__(self, data):
         self.data = data
         self.species = ExtractBytesFromIndex(data, 0, 2) # offset 0
@@ -84,7 +201,7 @@ class GrowthSection:
         self.friendship = ExtractBytesFromIndex(data, 9, 10) # offset 9
         self.unknown = None # offset 10
 
-class AttacksSection:
+class Attacks:
     def __init__(self, data):
         self.data = data
         self.move1 = ExtractBytesFromIndex(data, 0, 2) # offset 0
@@ -124,31 +241,31 @@ class Miscellaneous:
 
 
 
-trainer = PokemonParty(party_data_raw)
-print(trainer.party_data_raw + "\n")
+party = PokemonParty(party_data_raw)
+print(party.party_data_raw + "\n")
 
-print(trainer.personality_value)
-print(trainer.OT_ID)
-print(trainer.nickname)
-print(trainer.language)
-print(trainer.OT_name)
-print(trainer.markings)
-print(trainer.checksum)
-print(trainer.unknown)
+print(party.personality_value)
+print(party.OT_ID)
+print(party.nickname)
+print(party.language)
+print(party.OT_name)
+print(party.markings)
+print(party.checksum)
+print(party.unknown)
 
-pok_data = trainer.data
+pok_data = party.data
 print("\n  * " + pok_data.data)
 
 growth_sec = pok_data.growth
 print("\n  * " + growth_sec.data)
 
-print(trainer.status)
-print(trainer.level)
-print(trainer.pokerus)
-print(trainer.curr_hp)
-print(trainer.tot_hp)
-print(trainer.attack)
-print(trainer.defense)
-print(trainer.speed)
-print(trainer.sp_attack)
-print(trainer.sp_defense)
+print(party.status)
+print(party.level)
+print(party.pokerus)
+print(party.curr_hp)
+print(party.tot_hp)
+print(party.attack)
+print(party.defense)
+print(party.speed)
+print(party.sp_attack)
+print(party.sp_defense)
