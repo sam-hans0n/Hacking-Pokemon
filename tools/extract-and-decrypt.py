@@ -15,23 +15,25 @@
 # ------------------------------------------------------------------------------
 
 
-
-
-
 party_data_raw = "C1E007DD54E18D05BDC2BBCCC7BBC8BEBFCC0202BBBBBBBBBBBBBB00DA1200009F01A7D895018AD8B6298AD895018AD895018AD895018AD895598FFA75FF9AF395018AD891018AD812018AD895478AD80000000005FF120012000B000A000B000B000B0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FF000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FF0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+
+
+
 
 def LittleToBigEndian(byte_str):
     bytes_arr = []
     for i in range(0, len(byte_str), 2):
         bytes_arr.append(byte_str[i:i+2])
     bytes_arr = list(reversed(bytes_arr))
-
     bytes_little_endian = ''.join(bytes_arr) # essentially, the .implode() function from PHP
     return bytes_little_endian
 
+# Always reverse at the LOWEST LEVEL! 
+# Meaning, reverse once we are done dividing the byte str into objs
 def ExtractBytesFromIndexAndReverse(byte_str, start, end):
     return LittleToBigEndian(byte_str[start*2:end*2]) # 2 because there are 2 chars ber byte
 
+# No reverse, for when we have to keep diving bytes into substructures
 def ExtractBytesFromIndex(byte_str, start, end):
     return byte_str[start*2:end*2] # 2 because there are 2 chars ber byte
 
