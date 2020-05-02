@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------------
 
 
-party_data_raw = "C1E007DD54E18D05BDC2BBCCC7BBC8BEBFCC0202BBBBBBBBBBBBBB00DA1200009F01A7D895018AD8B6298AD895018AD895018AD895018AD895598FFA75FF9AF395018AD891018AD812018AD895478AD80000000005FF120012000B000A000B000B000B0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FF000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FF0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+party_data_raw = "C670482E5401384BCDCBCFC3CCCEC6BFFF730202BBBBBBBBBBBBBB00636A0000927170659271706592717065B371576592717065B16F7065957170651571706592377065922975471003937D927170650000000005FF130013000A000C00090009000D000000000000000000000000000000000000000000000000000000000000000000"
 
 
 
@@ -28,7 +28,7 @@ def LittleToBigEndian(byte_str):
     bytes_little_endian = ''.join(bytes_arr) # essentially, the .implode() function from PHP
     return bytes_little_endian
 
-# Always reverse at the LOWEST LEVEL! 
+# Always reverse at the LOWEST LEVEL!
 # Meaning, reverse once we are done dividing the byte str into objs
 def ExtractBytesFromIndexAndReverse(byte_str, start, end):
     return LittleToBigEndian(byte_str[start*2:end*2]) # 2 because there are 2 chars ber byte
@@ -238,17 +238,7 @@ class PokemonData:
 
 
     def Decrypt_PokemonData(self):
-
-        # personality_value = DD07E0C1 = 3708281025
-        # order_num = personality_value % 24 = 9
-        # order = AEMG
-        # OT_ID = 058DE154 = 93184340
-        # growth.species = D88A0191
-        # key = OT_ID XOR personality_value = 058DE154 XOR DD07E0C1 = d88a0195
-        # pokemon species = d88a0195 XOR D88A0191 = 4
-
         # Need 32-bit (4 byte) decryption key
-
         self.key = int(self.personality_value, 16) ^ int(self.OT_ID, 16)
         self.growth.pokemon_no = int(self.growth.species, 16) ^ self.key
 
@@ -314,10 +304,16 @@ class Miscellaneous:
 party = PokemonParty(party_data_raw)
 pokemon = party.data
 
-print("key = " + hex(pokemon.key))
-print("species = " + pokemon.growth.species)
+print("\n---------------- Pokemon Info ---------------")
+print("** The following are in Big Endian format\n")
+print("personality_value: " + pokemon.personality_value)
+print("OT_ID: " + pokemon.OT_ID)
+print("KEY FOUND: " + hex(pokemon.key))
 
-print("pokemon no: " + hex(pokemon.growth.pokemon_no))
+print("\nEncrypted Species (in hex): " + pokemon.growth.species)
+print("Pokemon No (in hex): " + hex(pokemon.growth.pokemon_no))
+
+print("\nPokemon order: " + pokemon.order)
 
 
 
