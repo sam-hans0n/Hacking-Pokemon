@@ -24,8 +24,8 @@ def LittleToBigEndian(byte_str):
     return bytes_little_endian
 
 
-# Always reverse at the LOWEST LEVEL!
-# Meaning, reverse once we are done dividing the byte str into objs
+# Always reverse at the LOWEST LEVEL -- meaning the raw bytes cannot be divided
+# into sub-structures!
 def ExtractBytesFromIndexAndReverse(byte_str, start, end):
     return LittleToBigEndian(byte_str[start*2:end*2]) # 2 because there are 2 chars ber byte
 
@@ -37,7 +37,7 @@ def ExtractBytesFromIndex(byte_str, start, end):
 
 # The class organization choice is to exactly reproduce how it's stored in
 # memory.
-class PokemonParty:
+class Pokemon:
     def __init__(self, party_data_raw):
         self.party_data_raw = party_data_raw
         self.personality_value = ExtractBytesFromIndexAndReverse(self.party_data_raw, 0, 4) # offset 0
@@ -61,6 +61,9 @@ class PokemonParty:
         self.speed = ExtractBytesFromIndexAndReverse(self.party_data_raw, 94, 96) # offset 94
         self.sp_attack = ExtractBytesFromIndexAndReverse(self.party_data_raw, 96, 98) # offset 96
         self.sp_defense = ExtractBytesFromIndexAndReverse(self.party_data_raw, 98, 100) # offset 98
+
+    def GetRawBytes():
+        return None
 
 
 
