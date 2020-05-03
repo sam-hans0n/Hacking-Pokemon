@@ -31,7 +31,5 @@ pokemon_data = pokemon.data
 # Checksum information:
 print("\n\nChecksum: " + pokemon.checksum)
 
-
 new_pokemon = input("Enter name of Pokemon: ")
-
-print(f"You chose: {new_pokemon}")
+new_id = input("Enter ID of Pokemon: ")
