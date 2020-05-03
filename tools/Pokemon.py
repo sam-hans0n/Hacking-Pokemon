@@ -42,7 +42,7 @@ class Pokemon:
         self.party_data_raw = party_data_raw
         self.personality_value = ExtractBytesFromIndexAndReverse(self.party_data_raw, 0, 4) # offset 0
         self.OT_ID = ExtractBytesFromIndexAndReverse(self.party_data_raw, 4, 8) # offset 4
-        self.nickname = ExtractBytesFromIndexAndReverse(self.party_data_raw, 8, 18) # offset 8
+        self.nickname = ExtractBytesFromIndex(self.party_data_raw, 8, 18) # offset 8
         self.language = ExtractBytesFromIndexAndReverse(self.party_data_raw, 18, 20) # offset 18
         self.OT_name = ExtractBytesFromIndexAndReverse(self.party_data_raw, 20, 27) # offset 20
         self.markings = ExtractBytesFromIndexAndReverse(self.party_data_raw, 27, 28) # offset 27
@@ -64,6 +64,7 @@ class Pokemon:
 
     def GetRawBytes():
         return None
+
 
 
 
