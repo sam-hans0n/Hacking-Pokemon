@@ -11,9 +11,8 @@ def isValidPokemonName(name):
         pokemon_data = data.split("\n")
         for poke in pokemon_data:
             if name in poke:
-                return False
-            else:
                 return True
+    return False
 
 
 # Pokemon games use a proprietary character encoding... This is an unfortunate
@@ -61,11 +60,11 @@ def EncodeStr(str):
 pokemon = Pokemon.Pokemon(party_data_raw)
 pokemon_data = pokemon.data
 
-
 name = input("Enter name of Pokemon (a-z): ")
 while not isValidPokemonName(name):
     print("\n\n That Pokemon does not exist.")
     name = input("Enter name of Pokemon (a-z): ")
+
 pokemon.nickname = EncodeStr(name)
 new_id = input("Enter ID of Pokemon (hex from 1-1B7): ")
 new_level = input("Enter new pokemon level (1-100): ")
