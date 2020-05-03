@@ -9,8 +9,8 @@ def isValidPokemonName(name):
         data = f.read()
 
         pokemon_data = data.split("\n")
-        for pokemon in pokemon_data:
-            if name in pokemon:
+        for poke in pokemon_data:
+            if name in poke:
                 return False
             else:
                 return True
@@ -21,7 +21,6 @@ def isValidPokemonName(name):
 # I like to think of this as the 'fast way' to convert to pokemon character
 # standards.
 def EncodeStr(str):
-
     columns = "0123456789ABCDEF"
     table = []
     table.append(["B", "***********ABCDE"])
@@ -35,11 +34,7 @@ def EncodeStr(str):
             if char in row[1]:
                 encoded_str += row[0]
                 encoded_str += columns[row[1].find(char)]
-
     return encoded_str
-
-
-    #for c in row
 
 
 # personality_value = DD07E0C1 = 3708281025
@@ -68,12 +63,10 @@ pokemon_data = pokemon.data
 
 
 name = input("Enter name of Pokemon (a-z): ")
-#if isValidPokemonName(name):
-    #print("\n\n That Pokemon does not exist.")
-    #name = input("Enter name of Pokemon (a-z): ")
-
-print(EncodeStr(name))
-
+while not isValidPokemonName(name):
+    print("\n\n That Pokemon does not exist.")
+    name = input("Enter name of Pokemon (a-z): ")
+pokemon.nickname = EncodeStr(name)
 new_id = input("Enter ID of Pokemon (hex from 1-1B7): ")
 new_level = input("Enter new pokemon level (1-100): ")
 
