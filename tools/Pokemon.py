@@ -9,9 +9,6 @@
 #  1) Have Python3 installed
 #  2) Change party_data_raw to be hexadecimal str of your party's memory
 #     (just copy/paste > 100 bytes and script will work)
-#
-# Future To-Do's:
-#   * User enters pokemon name, bytes automagically propagate into party struct
 # ------------------------------------------------------------------------------
 
 
@@ -335,7 +332,7 @@ class Attacks:
         raw_bytes += SwitchEndianFormats(self.pp2)# + " "
         raw_bytes += SwitchEndianFormats(self.pp3)# + " "
         raw_bytes += SwitchEndianFormats(self.pp4)# + " "
-        print("attacks: " + raw_bytes)
+        #print("attacks: " + raw_bytes)
         return raw_bytes
 
 class EV_Condition:

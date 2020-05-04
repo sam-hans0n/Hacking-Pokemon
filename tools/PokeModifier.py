@@ -59,11 +59,10 @@ def EncodeName(str):
 
 # ---- Main ----
 
+if len(party_data_raw) == 0:
+    print("You must add the byte data of your first Pokemon to party_data_raw!")
 pokemon = Pokemon.Pokemon(party_data_raw)
 pokemon_data = pokemon.data
-
-print("key: " + hex(pokemon.data.key))
-print("order: " + pokemon.data.order + "\n")
 
 name = input("Enter name of Pokemon (a-z): ")
 while not isValidPokemonName(name):
@@ -75,42 +74,12 @@ pokemon.nickname = EncodeName(name)
 id = int(GetPokemonID(name), 16)
 diff = id - 7
 pokemon.checksum = hex(int(pokemon.checksum, 16) + diff)[-4:]
-print(str(diff))
 pokemon.data.growth.species = hex(id ^ pokemon_data.key)[-4:] # extract last 4 chars
 
-print("\nold str:")
-print("C670482E 5401384B CDCBCFC3CCCEC6BFFF73 0202 BBBBBBBBBBBBBB 00 636A 0000 92 71 70 65 92 71 70 65 92 71 70 65 B371 5765 9271 7065 B1 6F 70 65 9571 7065 15717065 92 37 70 65 92 29 7547 1003937D 92717065 0000000005FF130013000A000C00090009000D0000")
-
-print("\nspecies = " + pokemon.data.growth.species)
-print("\nnew str:")
+print("\nCopy this into the memory map starting at 0x02024284:")
 pokemon.GetRawBytes()
-exit()
 
-new_level = input("Enter new pokemon level (1-100): ")
-while not isValidPokemonLevel(new_level):
-    print("\n\n That level is invalid. Must be 1-100")
-    new_level = input("Enter new pokemon level (1-100): ")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
+# new_level = input("Enter new pokemon level (1-100): ")
+# while not isValidPokemonLevel(new_level):
+#     print("\n\n That level is invalid. Must be 1-100")
+#     new_level = input("Enter new pokemon level (1-100): ")
