@@ -1,14 +1,9 @@
 # ------------------------------------------------------------------------------
 # Sam Hanson, 2020
 #
-# Created for CSCI5981: Binary Analysis and Reverse Engineering
-# This script parses hexadecimal memory values (starting at the first party
-# byte, location 0x02024284 in RAM) and decrypts pokemon data.
-#
-# How to Use:
-#  1) Have Python3 installed
-#  2) Change party_data_raw to be hexadecimal str of your party's memory
-#     (just copy/paste > 100 bytes and script will work)
+# Created for CSCI5981: Binary Analysis and Reverse Engineering.
+# This is a helper python file for the main script, PokeModifier.py which should
+# be located in the same directory as this file.
 # ------------------------------------------------------------------------------
 
 
@@ -65,15 +60,15 @@ class Pokemon:
 
     def GetRawBytes(self):
         raw_bytes = ""
-        raw_bytes += SwitchEndianFormats(self.personality_value)# + " "
-        raw_bytes += SwitchEndianFormats(self.OT_ID)# + " "
-        raw_bytes += self.nickname# + " "
-        raw_bytes += SwitchEndianFormats(self.language)# + " "
-        raw_bytes += SwitchEndianFormats(self.OT_name)# + " "
-        raw_bytes += SwitchEndianFormats(self.markings)# + " "
-        raw_bytes += SwitchEndianFormats(self.checksum)# + " "
-        raw_bytes += SwitchEndianFormats(self.unknown)# + " "
-        raw_bytes += self.data.GetRawBytes()# + " "
+        raw_bytes += SwitchEndianFormats(self.personality_value)
+        raw_bytes += SwitchEndianFormats(self.OT_ID)
+        raw_bytes += self.nickname
+        raw_bytes += SwitchEndianFormats(self.language)
+        raw_bytes += SwitchEndianFormats(self.OT_name)
+        raw_bytes += SwitchEndianFormats(self.markings)
+        raw_bytes += SwitchEndianFormats(self.checksum)
+        raw_bytes += SwitchEndianFormats(self.unknown)
+        raw_bytes += self.data.GetRawBytes()
         print(raw_bytes)
 
 
@@ -301,13 +296,12 @@ class Growth:
 
     def GetRawBytes(self):
         raw_bytes = ""
-        raw_bytes += SwitchEndianFormats(self.species)# + " "
-        raw_bytes += SwitchEndianFormats(self.item_held)# + " "
-        raw_bytes += SwitchEndianFormats(self.experience)# + " "
-        raw_bytes += SwitchEndianFormats(self.pp_bonuses)# + " "
-        raw_bytes += SwitchEndianFormats(self.friendship)# + " "
-        raw_bytes += SwitchEndianFormats(self.unknown)# + " "
-        #print("growth: " + raw_bytes)
+        raw_bytes += SwitchEndianFormats(self.species)
+        raw_bytes += SwitchEndianFormats(self.item_held)
+        raw_bytes += SwitchEndianFormats(self.experience)
+        raw_bytes += SwitchEndianFormats(self.pp_bonuses)
+        raw_bytes += SwitchEndianFormats(self.friendship)
+        raw_bytes += SwitchEndianFormats(self.unknown)
         return raw_bytes
 
 class Attacks:
@@ -324,15 +318,14 @@ class Attacks:
 
     def GetRawBytes(self):
         raw_bytes = ""
-        raw_bytes += SwitchEndianFormats(self.move1)# + " "
-        raw_bytes += SwitchEndianFormats(self.move2)# + " "
-        raw_bytes += SwitchEndianFormats(self.move3)# + " "
-        raw_bytes += SwitchEndianFormats(self.move4)# + " "
-        raw_bytes += SwitchEndianFormats(self.pp1)# + " "
-        raw_bytes += SwitchEndianFormats(self.pp2)# + " "
-        raw_bytes += SwitchEndianFormats(self.pp3)# + " "
-        raw_bytes += SwitchEndianFormats(self.pp4)# + " "
-        #print("attacks: " + raw_bytes)
+        raw_bytes += SwitchEndianFormats(self.move1)
+        raw_bytes += SwitchEndianFormats(self.move2)
+        raw_bytes += SwitchEndianFormats(self.move3)
+        raw_bytes += SwitchEndianFormats(self.move4)
+        raw_bytes += SwitchEndianFormats(self.pp1)
+        raw_bytes += SwitchEndianFormats(self.pp2)
+        raw_bytes += SwitchEndianFormats(self.pp3)
+        raw_bytes += SwitchEndianFormats(self.pp4)
         return raw_bytes
 
 class EV_Condition:
@@ -353,19 +346,18 @@ class EV_Condition:
 
     def GetRawBytes(self):
         raw_bytes = ""
-        raw_bytes += SwitchEndianFormats(self.hp_ev)# + " "
-        raw_bytes += SwitchEndianFormats(self.attack_ev)# + " "
-        raw_bytes += SwitchEndianFormats(self.defense_ev)# + " "
-        raw_bytes += SwitchEndianFormats(self.speed_ev)# + " "
-        raw_bytes += SwitchEndianFormats(self.sp_attack_ev)# + " "
-        raw_bytes += SwitchEndianFormats(self.sp_defense_ev)# + " "
-        raw_bytes += SwitchEndianFormats(self.coolness)# + " "
-        raw_bytes += SwitchEndianFormats(self.beauty)# + " "
-        raw_bytes += SwitchEndianFormats(self.cuteness)# + " "
-        raw_bytes += SwitchEndianFormats(self.smartness)# + " "
-        raw_bytes += SwitchEndianFormats(self.toughness)# + " "
-        raw_bytes += SwitchEndianFormats(self.feel)# + " "
-        #print("ev_cond: " + raw_bytes)
+        raw_bytes += SwitchEndianFormats(self.hp_ev)
+        raw_bytes += SwitchEndianFormats(self.attack_ev)
+        raw_bytes += SwitchEndianFormats(self.defense_ev)
+        raw_bytes += SwitchEndianFormats(self.speed_ev)
+        raw_bytes += SwitchEndianFormats(self.sp_attack_ev)
+        raw_bytes += SwitchEndianFormats(self.sp_defense_ev)
+        raw_bytes += SwitchEndianFormats(self.coolness)
+        raw_bytes += SwitchEndianFormats(self.beauty)
+        raw_bytes += SwitchEndianFormats(self.cuteness)
+        raw_bytes += SwitchEndianFormats(self.smartness)
+        raw_bytes += SwitchEndianFormats(self.toughness)
+        raw_bytes += SwitchEndianFormats(self.feel)
         return raw_bytes
 
 class Miscellaneous:
@@ -379,10 +371,9 @@ class Miscellaneous:
 
     def GetRawBytes(self):
         raw_bytes = ""
-        raw_bytes += SwitchEndianFormats(self.pokerus_status)# + " "
-        raw_bytes += SwitchEndianFormats(self.met_location)# + " "
-        raw_bytes += SwitchEndianFormats(self.origin_info)# + " "
-        raw_bytes += SwitchEndianFormats(self.IV_Egg_Ability)# + " "
-        raw_bytes += SwitchEndianFormats(self.Ribbons_Obediance)# + " "
-        #print("Misc: " + raw_bytes)
+        raw_bytes += SwitchEndianFormats(self.pokerus_status)
+        raw_bytes += SwitchEndianFormats(self.met_location)
+        raw_bytes += SwitchEndianFormats(self.origin_info)
+        raw_bytes += SwitchEndianFormats(self.IV_Egg_Ability)
+        raw_bytes += SwitchEndianFormats(self.Ribbons_Obediance)
         return raw_bytes

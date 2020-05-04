@@ -1,5 +1,19 @@
 from bs4 import BeautifulSoup
 
+# ------------------------------------------------------------------------------
+# Sam Hanson, 2020
+#
+# Created for CSCI5981: Binary Analysis and Reverse Engineering.
+# This is they python file that scrapes the website:
+# https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_index_number_(Generation_III)
+# and creates out "database" of Pokemon name and ID numbers (in hex). The database
+# is a file titled Pokemon-List.txt located one directory up.
+# ------------------------------------------------------------------------------
+
+
+
+
+
 # This was the simplest way I could map the Pokemon name
 # to the pokemon id. No way was I gonna do all that by
 # hand lol.
